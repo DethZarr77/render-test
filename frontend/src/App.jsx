@@ -11,14 +11,20 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
-    noteService.getAll().then((initialNotes) => {
-      setNotes(initialNotes);
-    });
+    noteService
+      .getAll()
+      .then((initialNotes) => {
+        setNotes(initialNotes);
+      })
+      .catch((error) => {
+        setErrorMessage(error.message);
+        setNotes([]);
+      });
   }, []);
 
   const notesToShow = showAll
-    ? notes
-    : notes?.filter((note) => note.important === true);
+    ? (notes ?? [])
+    : (notes?.filter((note) => note.important === true) ?? []);
 
   const addNote = (event) => {
     event.preventDefault();
@@ -57,14 +63,14 @@ const App = () => {
         setTimeout(() => {
           setErrorMessage(null);
         }, 5000);
-        
+
         setNotes(notes.filter((note) => note.id !== id));
       });
   };
 
-  if(!notes){
-    return null;
-  }
+  // if(!notes){
+  //   return null;
+  // }
 
   return (
     <div>
